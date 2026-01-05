@@ -1,0 +1,96 @@
+--«They disabled it»--!_. 
+brutonTab:AddButton({
+    Name = "تفعيل تخريب الجو",
+    Callback = function()
+        local Players = game:GetService("Players")
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        local LocalPlayer = Players.LocalPlayer
+
+        local Remotes = ReplicatedStorage:WaitForChild("Remotes")
+        local WearRemote = Remotes:WaitForChild("Wear")
+        local ChangeCharacterBody = Remotes:WaitForChild("ChangeCharacterBody")
+        local WearShirtRemote = Remotes:WaitForChild("WearShirt")
+
+        local CurrentTrack
+        local BodyId = "100839513065432"
+        local SkyboxActive = false
+        local Humanoid, Animator
+
+        local function SetupCharacter(char)
+            Humanoid = char:WaitForChild("Humanoid")
+            Animator = Humanoid:FindFirstChildOfClass("Animator")
+            if not Animator then
+                Animator = Instance.new("Animator", Humanoid)
+            end
+        end
+        
+        SetupCharacter(LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait())
+        LocalPlayer.CharacterAdded:Connect(SetupCharacter)
+        local function ApplyAccessories()
+        
+            local Desc = Humanoid:GetAppliedDescription()
+            for _, accessory in ipairs(Desc:GetAccessories(true)) do
+                if accessory.AssetId then
+                    pcall(function()
+                        WearRemote:InvokeServer(accessory.AssetId)
+                    end)
+                end
+            end
+        end
+
+
+        local function ApplyBody()
+            pcall(function()
+                ChangeCharacterBody:InvokeServer({
+                    [1] = tonumber(BodyId),
+                    [2] = nil,
+                    [3] = nil,
+                    [4] = nil,
+                    [5] = nil,
+                    [6] = nil
+                })
+            end)
+        end
+
+       local function PlayAnimation()
+            local AnimId = "rbxassetid://101852027997337"
+            local newAnim = Instance.new("Animation")
+            newAnim.AnimationId = AnimId
+
+
+            local newTrack
+            pcall(function()
+                newTrack = Animator:LoadAnimation(newAnim)
+                newTrack.Priority = Enum.AnimationPriority.Action4
+                newTrack:Play(0.1, 1, 1)
+            end)
+
+            CurrentTrack = newTrack
+        end
+
+        local function StopAnimation()
+            if CurrentTrack then
+                pcall(function()
+                    CurrentTrack:Stop(0)
+                end)
+            end
+        end
+
+        SkyboxActive = not SkyboxActive
+        if SkyboxActive then
+            local id = tonumber(getgenv().SkyboxClothID or "")
+            if id then
+                pcall(function()
+                    WearShirtRemote:InvokeServer(id)
+                end)
+            end
+            ApplyAccessories()
+            ApplyBody()
+            PlayAnimation()
+            print("BRUTON=*222--**×999∆**")
+        else
+            StopAnimation()
+            print("BRUTON=*222--**×999∆**")
+        end
+    end
+})
