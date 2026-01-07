@@ -1,39 +1,3 @@
--- It wasn't made by Bruton, it's by wx 
-local args = {
-    {
-        102344834840946,
-        16421543659,
-        16421543566
-
-     }
-}
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
-local function missing(t, f, fallback)
-    if type(f) == t then return f end
-    return fallback 
-end
-
-cloneref = missing("function", cloneref, function(...) return ... end)
-local Services = setmetatable({}, {
-    __index = function(_, name)
-        return cloneref(game:GetService(name))
-    end
-})
-local args = {
-	135942005436720
-}
-game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Wear"):InvokeServer(unpack(args))
-
-local Players = Services.Players
-local player = Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
-
-player.CharacterAdded:Connect(function(newCharacter)
-    character = newCharacter
-    humanoid = character:WaitForChild("Humanoid")
-end)
-
 local Settings = {
     ["Fade In"] = 0.1,
     ["Fade Out"] = 0.1,
